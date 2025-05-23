@@ -16,7 +16,7 @@ class MeshApp(App):
     def __init__(self):
         super().__init__()
         self.conn = MeshConn()
-        self.chat_window = ChatWindow("Select a contact")
+        self.chat_window = ChatWindow("Select a contact", send_callback=self.send_message)
         self.contact_list = ListView()
 
     def compose(self) -> ComposeResult:
@@ -43,3 +43,6 @@ class MeshApp(App):
         self.chat_window.input_box.border_title = f"Chat with {name}"
         self.chat_window.messages = []
         self.chat_window.update_display()
+    
+    async def send_message(self, longname: str, message: str):
+        await self.conn.send_message(longname, message)
