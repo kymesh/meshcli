@@ -15,9 +15,17 @@ class MeshApp(App):
 
     def __init__(self):
         super().__init__()
-        self.conn = MeshConn()
+        self.conn = MeshConn(on_message_callback=self.handle_incoming_message)
         self.chat_window = ChatWindow("Select a contact", send_callback=self.send_message)
         self.contact_list = ListView()
+    
+    def handle_incoming_message(self, longname, message):
+        self.call_later(self._display_incoming_message, longname, message)
+
+    async def _display_incoming_message(self, longname, message):
+        if self.chat_window.longname == longname:
+            self.chat_window.messages.append(f"{longname}: {message}")
+            self.chat_window.update_display()
 
     def compose(self) -> ComposeResult:
         yield Header()

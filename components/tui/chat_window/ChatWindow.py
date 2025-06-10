@@ -15,7 +15,8 @@ class ChatWindow(Vertical):
         self.send_callback = send_callback
         self.message_display = Static()
         self.input_box = Input(placeholder="Type a message and press Enter...")
-        self.input_box.border_title = f"Chat with {longname}"
+        self.input_wrapper = Static(self.input_box)
+        self.input_wrapper.border_title = f"Chat with {longname}"
 
     def compose(self) -> ComposeResult:
         yield self.message_display
