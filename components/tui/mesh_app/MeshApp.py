@@ -4,6 +4,7 @@ from textual.app import App, ComposeResult
 
 from components.mesh_conn.MeshConn import MeshConn
 from components.tui.chat_window.ChatWindow import ChatWindow
+from datetime import datetime
 
 
 class MeshApp(App):
@@ -24,11 +25,14 @@ class MeshApp(App):
 
     async def _display_incoming_message(self, longname, message):
         if self.chat_window.longname == longname:
-            self.chat_window.messages.append(f"{longname}: {message}")
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self.chat_window.messages.append(f" [dim]{timestamp}[/dim]\n[red] {longname}[/red]: {message}\n")
             self.chat_window.update_display()
 
     def compose(self) -> ComposeResult:
         yield Header()
+        self.contact_list.styles.width = "35%"
+        self.chat_window.styles.width = "65%"
         with Horizontal():
             yield self.contact_list
             yield self.chat_window

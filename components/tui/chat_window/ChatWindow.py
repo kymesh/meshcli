@@ -1,6 +1,7 @@
 from textual.widgets import Static, Input
 from textual.containers import Vertical
 from textual.app import ComposeResult
+from datetime import datetime
 
 
 class ChatWindow(Vertical):
@@ -25,7 +26,8 @@ class ChatWindow(Vertical):
     def on_input_submitted(self, event: Input.Submitted) -> None:
         message = event.value.strip()
         if message:
-            self.messages.append(f"You: {message}")
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self.messages.append(f" [dim]{timestamp}[/dim]\n[blue] You[/blue]: {message}\n")
             self.update_display()
             self.input_box.value = ""
             if self.send_callback and self.longname:
