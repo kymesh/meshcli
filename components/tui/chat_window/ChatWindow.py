@@ -1,27 +1,29 @@
 from textual.widgets import Static, Input
-from textual.containers import Vertical
+from textual.containers import Vertical, VerticalScroll
 from textual.app import ComposeResult
 from datetime import datetime
 
 
 class ChatWindow(Vertical):
-    """
-    A chat window for a selected contact.
-    """
-
     def __init__(self, longname: str, send_callback=None, **kwargs):
         super().__init__(**kwargs)
         self.longname = longname
         self.messages = []
         self.send_callback = send_callback
+
+        self.message_scroll = VerticalScroll()
+        self.message_scroll.styles.width = "100%"
+
         self.message_display = Static()
+
         self.input_box = Input(placeholder="Type a message and press Enter...")
-        self.input_wrapper = Static(self.input_box)
-        self.input_wrapper.border_title = f"Chat with {longname}"
 
     def compose(self) -> ComposeResult:
-        yield self.message_display
+        yield self.message_scroll
         yield self.input_box
+
+    async def on_mount(self):
+        await self.message_scroll.mount(self.message_display)
 
     def on_input_submitted(self, event: Input.Submitted) -> None:
         message = event.value.strip()
@@ -35,3 +37,5 @@ class ChatWindow(Vertical):
 
     def update_display(self):
         self.message_display.update("\n".join(self.messages))
+        self.message_scroll.scroll_end(animate=False)
+        

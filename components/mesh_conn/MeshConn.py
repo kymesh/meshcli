@@ -34,8 +34,13 @@ class MeshConn:
         # another one for the reverse {"id": "longName"}
         self.id_name_map = { id : metadata['user']['longName'] for id, metadata in self.nodes}
 
+    def get_this_node(self):
+        """
+        Return the name of our radio.
+        """
+        return self.this_node['user']['longName']
     
-    def on_receive(self, packet, interface):
+    def on_receive(self, packet):
         """
         Receive a message sent to our radio.
         """
