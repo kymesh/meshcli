@@ -2,6 +2,7 @@ from textual.widgets import Header, Footer, ListView, ListItem, Label
 from textual.containers import Horizontal
 from textual.app import App, ComposeResult
 
+from components.data.ChatDB import ChatDB
 from components.mesh_conn.MeshConn import MeshConn
 from components.tui.chat_window.ChatWindow import ChatWindow
 from datetime import datetime
@@ -16,6 +17,7 @@ class MeshApp(App):
 
     def __init__(self):
         super().__init__()
+        self.db = ChatDB()
         self.conn = MeshConn(on_message_callback=self.handle_incoming_message)
         self.chat_window = ChatWindow("Select a contact", send_callback=self.send_message)
         self.contact_list = ListView()
@@ -28,6 +30,7 @@ class MeshApp(App):
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             self.chat_window.messages.append(f" [dim]{timestamp}[/dim]\n[red] {longname}[/red]: {message}\n")
             self.chat_window.update_display()
+            self.db.save_message(longname, longname, message)
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -54,7 +57,15 @@ class MeshApp(App):
         self.chat_window.longname = name
         self.chat_window.input_box.border_title = f"Chat with {name}"
         self.chat_window.messages = []
+
+        for sender, msg, timestamp in self.db.load_messages(name):
+            if sender == "You":
+                self.chat_window.messages.append(f" [dim]{timestamp}[/dim]\n[blue] You[/blue]: {msg}\n")
+            else:
+                self.chat_window.messages.append(f" [dim]{timestamp}[/dim]\n[red] {sender}[/red]: {message}\n")
+        
         self.chat_window.update_display()
     
     async def send_message(self, longname: str, message: str):
         await self.conn.send_message(longname, message)
+        self.db.save_message(longname, "You", message)

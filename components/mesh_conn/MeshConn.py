@@ -3,6 +3,7 @@ import meshtastic
 import meshtastic.serial_interface
 from pubsub import pub
 import time
+import sys
 
 
 class MeshConn:
@@ -13,8 +14,17 @@ class MeshConn:
         self.on_message_callback = on_message_callback
         pub.subscribe(self.on_receive, "meshtastic.receive")
 
-        self.interface = meshtastic.serial_interface.SerialInterface()
-        self.nodes = self.interface.nodes.items()
+        try:
+            self.interface = meshtastic.serial_interface.SerialInterface()
+        except Exception as e:
+            print("ERROR: There was an error connecting to the radio.", e)
+            sys.exit(1)
+
+        try:
+            self.nodes = self.interface.nodes.items()
+        except AttributeError as e:
+            print("ERROR: It is likely that there is no radio connected.", e)
+            sys.exit(1)
 
         self.this_node = self.interface.getMyNodeInfo()
         
