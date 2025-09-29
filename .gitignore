@@ -12,3 +12,4 @@ wheels/
 
 # SQLite Database
 *.db
+*.sqlite3
