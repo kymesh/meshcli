@@ -3,7 +3,6 @@ from typing import override
 
 from textual.app import ComposeResult
 from textual.containers import Vertical, VerticalScroll
-from textual.events import Callback
 from textual.widgets import Input, Static
 
 
