@@ -1,5 +1,5 @@
-from components.tui.mesh_app.MeshApp import MeshApp
+from src.application import MeshCLI
 
 if __name__ == "__main__":
-    app = MeshApp()
+    app: MeshCLI = MeshCLI()
     app.run()
