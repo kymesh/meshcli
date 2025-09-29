@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import datetime
 
+
 class ChatDB:
     def __init__(self, db_path="chat_history.db"):
         self.conn = sqlite3.connect(db_path)
@@ -22,14 +23,14 @@ class ChatDB:
         timestamp = datetime.now().isoformat()
         self.conn.execute(
             "INSERT INTO messages (contact, sender, message, timestamp) VALUES (?, ?, ?, ?)",
-            (contact, sender, message, timestamp)
+            (contact, sender, message, timestamp),
         )
         self.conn.commit()
 
     def load_messages(self, contact):
         cursor = self.conn.execute(
             "SELECT sender, message, timestamp FROM messages WHERE contact = ? ORDER BY timestamp",
-            (contact,)
+            (contact,),
         )
         return cursor.fetchall()
 

@@ -27,19 +27,23 @@ class MeshConn:
             sys.exit(1)
 
         self.this_node = self.interface.getMyNodeInfo()
-        
+
         # create dictionary for long names and radio ids {"longName":"id"}
-        self.name_id_map = { metadata['user']['longName'] : id for id, metadata in self.nodes}
+        self.name_id_map = {
+            metadata["user"]["longName"]: id for id, metadata in self.nodes
+        }
 
         # another one for the reverse {"id": "longName"}
-        self.id_name_map = { id : metadata['user']['longName'] for id, metadata in self.nodes}
+        self.id_name_map = {
+            id: metadata["user"]["longName"] for id, metadata in self.nodes
+        }
 
     def get_this_node(self):
         """
         Return the name of our radio.
         """
-        return self.this_node['user']['longName']
-    
+        return self.this_node["user"]["longName"]
+
     def on_receive(self, packet):
         """
         Receive a message sent to our radio.
@@ -48,7 +52,7 @@ class MeshConn:
             to_id = packet.get("toId")
             from_id = packet.get("fromId")
             message = packet["decoded"]["text"]
-            this_id = self.this_node['user']['id']
+            this_id = self.this_node["user"]["id"]
 
             if to_id == this_id or to_id == "^all":
                 sender_name = self.id_name_map.get(from_id, "Unknown")
@@ -57,15 +61,13 @@ class MeshConn:
         except Exception as e:
             print(f"[ERROR on_receive] {e}")
 
-
     def get_long_names(self):
         """
         Retrieve the names of all other nodes in the mesh
         """
         long_names = self.name_id_map.keys()
         return long_names
-    
+
     async def send_message(self, longname: str, message: str):
         id = self.name_id_map[longname]
         self.interface.sendText(message, destinationId=id)
-

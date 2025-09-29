@@ -29,7 +29,9 @@ class ChatWindow(Vertical):
         message = event.value.strip()
         if message:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            self.messages.append(f" [dim]{timestamp}[/dim]\n[blue] You[/blue]: {message}\n")
+            self.messages.append(
+                f" [dim]{timestamp}[/dim]\n[blue] You[/blue]: {message}\n"
+            )
             self.update_display()
             self.input_box.value = ""
             if self.send_callback and self.longname:
@@ -38,4 +40,3 @@ class ChatWindow(Vertical):
     def update_display(self):
         self.message_display.update("\n".join(self.messages))
         self.message_scroll.scroll_end(animate=False)
-        
