@@ -49,7 +49,9 @@ class MeshCLI(App):
         self.connection_label.update(f"[bold green]Connected to:[/] {node_name}")
 
         for name in self.conn.get_long_names():
-            await self.contact_list.append(ListItem(Label(name)))
+            # Don't select our own node
+            if name != node_name:
+                await self.contact_list.append(ListItem(Label(name)))
 
     def action_toggle_dark(self) -> None:
         self.theme = (
